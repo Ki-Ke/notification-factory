@@ -14,11 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export enum NotificationType {
-    NATIVE,
-    HTML
-}
-
 export interface NativeNotificationOpts {
     title: string;
     lang: string;
@@ -41,8 +36,17 @@ export interface NotificationPosition {
     display: string;
 }
 
+export enum NotificationType {
+    NATIVE,
+    HTML
+}
+
 export enum NativeNotificationDir {
     AUTO,
     LTR,
     RTL
+}
+
+export enum NotificationDesigns {
+    'MAC_STYLE'
 }
