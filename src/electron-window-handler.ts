@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import electron from 'electron';
+import * as electron from 'electron';
 import { BrowserWindow } from 'electron';
 import { NotificationDesigns } from './notifications/interfaces';
 
@@ -33,7 +33,7 @@ export interface WindowOpts {
     webPreferences: WebPreferences;
 }
 
-export class CreateWindow {
+export class ElectronWindowHandler {
 
     public createNotificationWindow(design: NotificationDesigns): electron.BrowserWindow {
         const options = this.getWindowOpts();
@@ -90,3 +90,9 @@ export class CreateWindow {
     }
 
 }
+
+const windowHandler = new ElectronWindowHandler();
+
+export {
+    windowHandler
+};

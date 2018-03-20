@@ -48,5 +48,5 @@ export enum NativeNotificationDir {
 }
 
 export enum NotificationDesigns {
-    'MAC_STYLE'
+    MAC_STYLE = 'mac-style.html'
 }
