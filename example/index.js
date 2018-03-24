@@ -17,7 +17,7 @@
 'use strict';
 
 const { app, BrowserWindow, ipcMain } = require('electron');
-const notificationFactory = require('../lib/index');
+const { NotificationFactory } = require('../lib/index');
 const path = require('path');
 
 let mainWindow;
@@ -50,5 +50,8 @@ app.on('window-all-closed', () => {
 });
 
 // Preload event listeners
-ipcMain.on('show-notification', () => notificationFactory.showNotificaion());
+ipcMain.on('show-notification', () => {
+    const notification = new NotificationFactory({title: "akon"});
+    notification.show();
+});
 

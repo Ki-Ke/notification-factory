@@ -14,21 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export interface NativeNotificationOpts {
+export interface NotificationOpts {
     title: string;
-    lang: string;
-    dir: NativeNotificationDir;
-    body: string;
-    tag: string;
-    icon: string;
+    lang?: string;
+    dir?: NotificationDirection;
+    body?: string;
+    tag?: string;
+    icon?: string;
 }
 
-export interface CustomNotificationOpts extends NativeNotificationOpts {
+export interface CustomNotificationOpts extends NotificationPosition {
     backgroundColor?: string;
     design?: string;
     flash?: boolean;
     persistent?: boolean;
     subTitle?: string;
+}
+
+export interface NotificationFactoryOpts extends CustomNotificationOpts {
+    type: NotificationType;
 }
 
 export interface NotificationPosition {
@@ -41,12 +45,12 @@ export enum NotificationType {
     HTML
 }
 
-export enum NativeNotificationDir {
+export enum NotificationDirection {
     AUTO,
     LTR,
     RTL
 }
 
 export enum NotificationDesigns {
-    MAC_STYLE = 'mac-style.html'
+    MAC_STYLE = 'mac-style'
 }

@@ -14,10 +14,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 import { windowHandler } from './electron-window-handler';
-import { NotificationDesigns } from './notifications/interfaces';
+import {
+    NotificationFactoryOpts,
+    NotificationType,
+    NotificationOpts
+} from './notifications/interfaces';
 
-export const showNotificaion = () => {
-    const notificationWindow =
-        windowHandler.createNotificationWindow(NotificationDesigns.MAC_STYLE);
-    notificationWindow.show();
-};
+export class NotificationFactory {
+    private notification: Electron.BrowserWindow;
+
+    constructor(content: NotificationOpts, opts: Partial<NotificationFactoryOpts> = {
+        type: NotificationType.HTML,
+        backgroundColor: '#fff',
+        flash: false,
+        persistent: false,
+        corner: 'upper-right'
+    }) {
+        this.notification = windowHandler.createNotificationWindow(opts.design);
+    }
+
+    public show() {
+        this.notification.show();
+    }
+
+}
