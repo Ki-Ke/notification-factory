@@ -1,0 +1,14 @@
+{
+  "name": "notification-factory-example",
+  "version": "1.0.0",
+  "description": "Test notification factroy",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Kiran Niranjan <kiran@kike.co.in>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "electron": "^1.8.4"
+  }
+}

@@ -13,6 +13,42 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  **/
-const notificationFactory = require('../lib/index.js');
 
-notificationFactory.showNotificaion();
+'use strict';
+
+const { app, BrowserWindow, ipcMain } = require('electron');
+const notificationFactory = require('../lib/index');
+const path = require('path');
+
+let mainWindow;
+
+const preload = path.join(__dirname, '/preload.js');
+
+const createWindow = () => {
+    mainWindow = new BrowserWindow({
+        width: 800,
+        height: 600,
+        webPreferences: {
+            sandbox: false,
+            nodeIntegration: false,
+            preload: preload,
+            nativeWindowOpen: true
+        }
+    });
+
+    mainWindow.loadURL(`file://${__dirname}/index.html`);
+
+    mainWindow.on('closed', () => {
+        mainWindow = null;
+    });
+};
+
+app.on('ready', createWindow);
+
+app.on('window-all-closed', () => {
+    app.quit();
+});
+
+// Preload event listeners
+ipcMain.on('show-notification', () => notificationFactory.showNotificaion());
+
