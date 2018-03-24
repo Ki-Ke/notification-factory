@@ -46,16 +46,21 @@ export class ElectronWindowHandler {
         return browserWindow;
     }
 
+    /**
+     * Returns the default Electron BrowserWindow opts
+     *
+     * @return {WindowOpts}
+     */
     private getWindowOpts(): WindowOpts {
         return {
             alwaysOnTop: true,
             resizeable: false,
             show: false,
             frame: false,
-            transparent: true,
+            transparent: false,
             skipTaskbar: true,
             webPreferences: {
-                preload: './preload-script',
+                preload: require.resolve('./preload-script'),
                 sandbox: true,
                 nodeIntegration: false
             }
@@ -69,7 +74,7 @@ export class ElectronWindowHandler {
      * @return {string}
      */
     private getResourcePath(design: NotificationDesigns): string {
-        return require.resolve(`./ui/${design}`);
+        return 'file://' + require.resolve(`./ui/${design}`);
     }
 
     /**

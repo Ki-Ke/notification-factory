@@ -8,7 +8,8 @@
     "clean": "rm -rf lib",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "tslint --project tsconfig.json",
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && tsc && npm run htmlcopy",
+    "htmlcopy": "copyfiles -f src/ui/*.html lib/ui/",
     "link": "npm run build && npm link"
   },
   "repository": {
@@ -27,6 +28,7 @@
   },
   "homepage": "https://github.com/Ki-Ke/notification-factory#readme",
   "devDependencies": {
+    "copyfiles": "^2.0.0",
     "electron": "^1.8.4",
     "tslint": "^5.9.1",
     "typescript": "^2.7.2"
