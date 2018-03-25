@@ -15,7 +15,7 @@ limitations under the License.
 */
 import * as electron from 'electron';
 import { BrowserWindow } from 'electron';
-import { NotificationDesigns } from './notifications/interfaces';
+import { NotificationDesigns, NotificationPosition } from './notifications/interfaces';
 
 export interface WebPreferences {
     preload: string;
@@ -24,6 +24,8 @@ export interface WebPreferences {
 }
 
 export interface WindowOpts {
+    height: number | undefined;
+    width: number | undefined;
     alwaysOnTop: boolean;
     resizeable: boolean;
     show: boolean;
@@ -33,14 +35,22 @@ export interface WindowOpts {
     webPreferences: WebPreferences;
 }
 
-export class ElectronWindowHandler {
+export default class ElectronWindowHandler {
+    private design: NotificationDesigns;
+    private position: NotificationPosition;
 
-    public createNotificationWindow(
-        design: string = NotificationDesigns.MAC_STYLE
-    ): electron.BrowserWindow {
+    constructor(
+        design: NotificationDesigns = NotificationDesigns.MAC_STYLE,
+        position: NotificationPosition
+    ) {
+        this.design = design;
+        this.position = position;
+    }
+
+    public createNotificationWindow(): electron.BrowserWindow {
         const options = this.getWindowOpts();
         const browserWindow = new BrowserWindow(options);
-        const resourcePath = this.getResourcePath(design);
+        const resourcePath = this.getResourcePath();
 
         browserWindow.loadURL(resourcePath);
         this.disableNavigation(browserWindow);
@@ -54,7 +64,10 @@ export class ElectronWindowHandler {
      * @return {WindowOpts}
      */
     private getWindowOpts(): WindowOpts {
+        const { width, height } = this.getWindowRect();
         return {
+            height,
+            width,
             alwaysOnTop: true,
             resizeable: false,
             show: false,
@@ -70,13 +83,26 @@ export class ElectronWindowHandler {
     }
 
     /**
+     * Returns the width and height for the specific notification style
+     *
+     * @return {Partial<Electron.Rectangle>}
+     */
+    private getWindowRect(): Partial<electron.Rectangle> {
+        switch (this.design) {
+            case NotificationDesigns.MAC_STYLE:
+                return { width: 350, height: 70 };
+            default:
+                return { width: 350, height: 70 };
+        }
+    }
+
+    /**
      * Resolves path
      *
-     * @param {string} design
      * @return {string}
      */
-    private getResourcePath(design: string): string {
-        return 'file://' + require.resolve(`./ui/${design}.html`);
+    private getResourcePath(): string {
+        return 'file://' + require.resolve(`./ui/${this.design}.html`);
     }
 
     /**
@@ -97,9 +123,3 @@ export class ElectronWindowHandler {
     }
 
 }
-
-const windowHandler = new ElectronWindowHandler();
-
-export {
-    windowHandler
-};

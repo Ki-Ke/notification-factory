@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import { windowHandler } from './electron-window-handler';
+import { CustomHtmlNotification } from './notifications/custom-html-notification';
 import {
     NotificationFactoryOpts,
     NotificationType,
@@ -21,7 +21,7 @@ import {
 } from './notifications/interfaces';
 
 export class NotificationFactory {
-    private notification: Electron.BrowserWindow;
+    private customHtmlNotification: CustomHtmlNotification;
 
     constructor(content: NotificationOpts, opts: Partial<NotificationFactoryOpts> = {
         type: NotificationType.HTML,
@@ -30,11 +30,11 @@ export class NotificationFactory {
         persistent: false,
         corner: 'upper-right'
     }) {
-        this.notification = windowHandler.createNotificationWindow(opts.design);
+        this.customHtmlNotification = new CustomHtmlNotification(opts);
     }
 
     public show() {
-        this.notification.show();
+        this.customHtmlNotification.show();
     }
 
 }

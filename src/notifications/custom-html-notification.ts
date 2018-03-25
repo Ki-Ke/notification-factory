@@ -13,11 +13,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import { CustomNotificationOpts } from './interfaces';
+import ElectronWindowHandler from '../electron-window-handler';
+import {
+    NotificationDesigns,
+    NotificationFactoryOpts,
+    NotificationPosition
+} from './interfaces';
 
 export class CustomHtmlNotification {
+    private electronWindow: ElectronWindowHandler;
+    private notification: Electron.BrowserWindow;
 
-    constructor(opts: CustomNotificationOpts) {
+    constructor(opts: Partial<NotificationFactoryOpts>) {
+        this.electronWindow = new ElectronWindowHandler(
+            opts.design as NotificationDesigns,
+            opts as NotificationPosition
+        );
+        this.notification = this.electronWindow.createNotificationWindow();
+    }
 
+    public show() {
+        this.notification.show();
     }
 }
