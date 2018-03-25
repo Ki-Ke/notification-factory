@@ -35,7 +35,9 @@ export interface WindowOpts {
 
 export class ElectronWindowHandler {
 
-    public createNotificationWindow(design?: string): electron.BrowserWindow {
+    public createNotificationWindow(
+        design: string = NotificationDesigns.MAC_STYLE
+    ): electron.BrowserWindow {
         const options = this.getWindowOpts();
         const browserWindow = new BrowserWindow(options);
         const resourcePath = this.getResourcePath(design);
@@ -73,7 +75,7 @@ export class ElectronWindowHandler {
      * @param {string} design
      * @return {string}
      */
-    private getResourcePath(design: string = NotificationDesigns.MAC_STYLE): string {
+    private getResourcePath(design: string): string {
         return 'file://' + require.resolve(`./ui/${design}.html`);
     }
 
