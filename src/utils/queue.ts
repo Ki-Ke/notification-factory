@@ -13,17 +13,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+import * as Rx from 'rxjs';
 
-import * as EventEmitter from 'events';
+export class Queue extends Rx.Subject<any> {
+    private items = [];
 
-export interface NotificationEventsInterface {
-    on(event: 'click', listener: (event: MouseEvent) => void): this;
-    on(event: 'close', listener: (event: CloseEvent) => void): this;
-}
+    public add(item: any) {
+        if (this.observers.length > 0) {
+            this.next(item);
+        } else {
+            this.items.push(item);
+        }
+    }
 
-export abstract class NotificationEvents extends EventEmitter implements
-    NotificationEventsInterface {
-    protected constructor() {
-        super();
+    public subscribe(observer: any) {
+        const sub = super.subscribe(observer);
+        this.items.forEach((item) => this.next(item));
+        this.items = [];
+        return sub;
     }
 }

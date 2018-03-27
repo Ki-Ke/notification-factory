@@ -15,7 +15,7 @@ limitations under the License.
 */
 import * as electron from 'electron';
 import { BrowserWindow } from 'electron';
-import { NotificationDesigns, NotificationPosition } from './notifications/interfaces';
+import { NotificationDesigns, NotificationPosition } from '../notifications/interfaces';
 
 export interface WebPreferences {
     preload: string;
@@ -35,8 +35,8 @@ export interface WindowOpts {
     webPreferences: WebPreferences;
 }
 
-export default class ElectronWindowHandler {
-    private design: NotificationDesigns;
+export default class Main {
+    private readonly design: NotificationDesigns;
     private position: NotificationPosition;
 
     constructor(
