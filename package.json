@@ -8,9 +8,10 @@
     "clean": "rm -rf lib",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "tslint --project tsconfig.json",
-    "build": "npm run clean && tsc && npm run htmlcopy",
+    "build": "npm run clean && tsc && npm run htmlcopy && npm run browserify-preload",
     "htmlcopy": "copyfiles -f src/ui/*.html lib/ui/",
-    "link": "npm run build && npm link"
+    "link": "npm run build && npm link",
+    "browserify-preload": "browserify -o lib/electron/preload.js -x electron --insert-global-vars=__filename,__dirname lib/electron/preload.js"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,7 @@
   },
   "homepage": "https://github.com/Ki-Ke/notification-factory#readme",
   "devDependencies": {
+    "browserify": "^16.1.1",
     "copyfiles": "^2.0.0",
     "electron": "^1.8.4",
     "rxjs": "^5.5.8",

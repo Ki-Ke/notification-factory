@@ -91,6 +91,8 @@ export default class Main {
         switch (this.design) {
             case NotificationDesigns.MAC_STYLE:
                 return { width: 350, height: 70 };
+            case NotificationDesigns.SIMPLE:
+                return { width: 450, height: 90 };
             default:
                 return { width: 350, height: 70 };
         }

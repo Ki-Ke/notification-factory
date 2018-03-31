@@ -52,5 +52,6 @@ export enum NotificationDirection {
 }
 
 export enum NotificationDesigns {
-    MAC_STYLE = 'mac-style'
+    MAC_STYLE = 'mac-style',
+    SIMPLE = 'simple'
 }

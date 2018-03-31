@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+import { ipcMain } from 'electron';
 import Main from '../electron/main';
 import {
     NotificationDesigns,
@@ -36,12 +37,28 @@ export class CustomHtmlNotification extends NotificationEvents {
         );
         // create a notification window
         this.notification = this.electronWindow.createNotificationWindow();
+        this.setContent(opts);
         notificationWindowHandler.add(this.notification);
 
         this.notification.once('close', (e) => notificationWindowHandler.remove(e.sender.id));
+        ipcMain.once('close-notification', this.closeNotification.bind(this));
     }
 
-    private setContent(opts: NotificationFactoryOpts) {
+    /**
+     * Sets notification contents
+     * @param {Partial<NotificationFactoryOpts>} opts
+     */
+    private setContent(opts: Partial<NotificationFactoryOpts>) {
         this.notification.webContents.send('set-content', opts);
+    }
+
+    /**
+     * Closes the notification window
+     * @param {Electron.Event} event
+     */
+    private closeNotification(event: Electron.Event) {
+        if (event.sender.id === this.notification.id) {
+            this.notification.close();
+        }
     }
 }
