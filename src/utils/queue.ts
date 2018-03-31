@@ -15,8 +15,8 @@ limitations under the License.
 */
 import * as Rx from 'rxjs';
 
-export class Queue extends Rx.Subject<any> {
-    private items = [];
+export class Queue extends Rx.Subject<Queue> {
+    private items: any = [];
 
     public add(item: any) {
         if (this.observers.length > 0) {
@@ -28,7 +28,7 @@ export class Queue extends Rx.Subject<any> {
 
     public subscribe(observer: any) {
         const sub = super.subscribe(observer);
-        this.items.forEach((item) => this.next(item));
+        this.items.forEach((item: any) => this.next(item));
         this.items = [];
         return sub;
     }

@@ -20,12 +20,13 @@ import {
     NotificationPosition
 } from './interfaces';
 import { NotificationEvents } from './notification-events';
-import { Queue } from '../utils/queue';
-const queue = new Queue();
+import { NotificationWindowHandler } from './notification-window-handler';
+
+const notificationWindowHandler = new NotificationWindowHandler();
 
 export class CustomHtmlNotification extends NotificationEvents {
     private electronWindow: Main;
-    private notification: Electron.BrowserWindow;
+    private readonly notification: Electron.BrowserWindow;
 
     constructor(opts: Partial<NotificationFactoryOpts>) {
         super();
@@ -33,8 +34,14 @@ export class CustomHtmlNotification extends NotificationEvents {
             opts.design as NotificationDesigns,
             opts as NotificationPosition
         );
+        // create a notification window
         this.notification = this.electronWindow.createNotificationWindow();
-        queue.subscribe(this.notification);
-        queue.add(this.notification.show);
+        notificationWindowHandler.add(this.notification);
+
+        this.notification.once('close', (e) => notificationWindowHandler.remove(e.sender.id));
+    }
+
+    private setContent(opts: NotificationFactoryOpts) {
+        this.notification.webContents.send('set-content', opts);
     }
 }

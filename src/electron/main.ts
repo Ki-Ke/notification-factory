@@ -75,7 +75,7 @@ export default class Main {
             transparent: false,
             skipTaskbar: true,
             webPreferences: {
-                preload: require.resolve('./preload-script'),
+                preload: require.resolve('./preload'),
                 sandbox: true,
                 nodeIntegration: false
             }
@@ -102,7 +102,7 @@ export default class Main {
      * @return {string}
      */
     private getResourcePath(): string {
-        return 'file://' + require.resolve(`./ui/${this.design}.html`);
+        return 'file://' + require.resolve(`./../ui/${this.design}.html`);
     }
 
     /**

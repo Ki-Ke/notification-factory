@@ -33,8 +33,4 @@ export class NotificationFactory {
         this.customHtmlNotification = new CustomHtmlNotification(opts);
     }
 
-    public show() {
-        this.customHtmlNotification.show();
-    }
-
 }
