@@ -15,7 +15,11 @@ limitations under the License.
 */
 import * as electron from 'electron';
 import { BrowserWindow } from 'electron';
-import { NotificationDesigns, NotificationPosition } from '../notifications/interfaces';
+import {
+    NotificationDesigns,
+    NotificationFactoryOpts,
+    NotificationPosition
+} from '../notifications/interfaces';
 
 export interface WebPreferences {
     preload: string;
@@ -39,12 +43,9 @@ export default class Main {
     private readonly design: NotificationDesigns;
     private position: NotificationPosition;
 
-    constructor(
-        design: NotificationDesigns = NotificationDesigns.MAC_STYLE,
-        position: NotificationPosition
-    ) {
-        this.design = design;
-        this.position = position;
+    constructor(opts: Partial<NotificationFactoryOpts>, position: Partial<NotificationPosition>) {
+        this.design = opts.design as NotificationDesigns;
+        this.position = position as NotificationPosition;
     }
 
     public createNotificationWindow(): electron.BrowserWindow {

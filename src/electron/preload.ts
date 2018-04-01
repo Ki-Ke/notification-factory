@@ -16,8 +16,7 @@ limitations under the License.
 'use strict';
 import { ipcRenderer } from 'electron';
 import { Observable } from 'rxjs/Rx';
-
-window.addEventListener('DOMContentLoaded', initialize);
+import { NotificationContent, NotificationFactoryOpts } from '../notifications/interfaces';
 
 function initialize() {
     const notification = document.getElementById('container');
@@ -39,17 +38,30 @@ function initialize() {
 /**
  * Sets the notification content
  * @param {Electron.Event} event
+ * @param content
  * @param {Object} opts
  */
-function setNotificationContent(event: Electron.Event, opts: { title: string; body: string; }) {
+function setNotificationContent(
+    event: Electron.Event,
+    content: Partial<NotificationContent>,
+    opts: Partial<NotificationFactoryOpts>
+) {
+    initialize();
     const title = document.getElementById('title');
     const message = document.getElementById('message');
+    const cancel = document.getElementById('cancel');
 
-    if (title) title.innerText = opts.title || '';
-    if (message) message.innerText = opts.body || '';
+    if (title) title.innerText = content.title || '';
+    if (message) message.innerText = content.body || '';
+
+    if (cancel) cancel.addEventListener('click', () => {
+        console.log('clocked close notification');
+        ipcRenderer.send('close-notification');
+    });
 }
 
 function closeNotification() {
+    console.log('notification close event called');
     ipcRenderer.send('close-notification');
 }
 

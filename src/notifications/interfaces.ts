@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export interface NotificationOpts {
+export interface NotificationContent {
     title: string;
     lang?: string;
     dir?: NotificationDirection;
@@ -29,15 +29,17 @@ export interface CustomNotificationOpts extends NotificationPosition {
     flash?: boolean;
     persistent?: boolean;
     subTitle?: string;
+    closeNotification?({}: any): any;
+    clickNotification?(): any;
 }
 
 export interface NotificationFactoryOpts extends CustomNotificationOpts {
-    type: NotificationType;
+    type?: NotificationType;
 }
 
 export interface NotificationPosition {
-    corner: string;
-    display: string;
+    corner?: string;
+    display?: string;
 }
 
 export enum NotificationType {

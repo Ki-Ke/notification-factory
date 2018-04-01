@@ -17,20 +17,36 @@ import { CustomHtmlNotification } from './notifications/custom-html-notification
 import {
     NotificationFactoryOpts,
     NotificationType,
-    NotificationOpts
+    NotificationPosition,
+    NotificationContent
 } from './notifications/interfaces';
+import * as EventEmitter from 'events';
 
-export class NotificationFactory {
+export class NotificationFactory extends EventEmitter {
     private customHtmlNotification: CustomHtmlNotification;
+    private readonly opts: NotificationFactoryOpts;
 
-    constructor(content: NotificationOpts, opts: Partial<NotificationFactoryOpts> = {
-        type: NotificationType.HTML,
-        backgroundColor: '#fff',
-        flash: false,
-        persistent: false,
-        corner: 'upper-right'
-    }) {
-        this.customHtmlNotification = new CustomHtmlNotification(opts);
+    constructor(
+        content: NotificationContent,
+        opts: NotificationFactoryOpts = {
+            type: NotificationType.HTML,
+            backgroundColor: '#fff',
+            flash: false,
+            persistent: false
+        },
+        position: Partial<NotificationPosition> = {
+            corner: 'upper-left',
+            display: ''
+        }
+    ) {
+        super();
+        this.opts = opts;
+        this.opts.closeNotification = this.closeNotification;
+        this.customHtmlNotification = new CustomHtmlNotification(content, this.opts, position);
     }
 
+    private closeNotification(arg: { id: number }) {
+        console.log('main close called');
+        this.emit('close', arg);
+    }
 }

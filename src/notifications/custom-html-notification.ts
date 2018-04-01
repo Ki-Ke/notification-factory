@@ -13,52 +13,60 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import { ipcMain } from 'electron';
+import { ipcMain, BrowserWindow } from 'electron';
 import Main from '../electron/main';
 import {
-    NotificationDesigns,
+    NotificationContent,
     NotificationFactoryOpts,
     NotificationPosition
 } from './interfaces';
-import { NotificationEvents } from './notification-events';
 import { NotificationWindowHandler } from './notification-window-handler';
 
 const notificationWindowHandler = new NotificationWindowHandler();
 
-export class CustomHtmlNotification extends NotificationEvents {
+export class CustomHtmlNotification {
     private electronWindow: Main;
     private readonly notification: Electron.BrowserWindow;
+    private opts: Partial<NotificationFactoryOpts>;
 
-    constructor(opts: Partial<NotificationFactoryOpts>) {
-        super();
-        this.electronWindow = new Main(
-            opts.design as NotificationDesigns,
-            opts as NotificationPosition
-        );
+    constructor(
+        content: Partial<NotificationContent>,
+        opts: Partial<NotificationFactoryOpts>,
+        position: Partial<NotificationPosition>
+    ) {
+        this.opts = opts;
+        this.electronWindow = new Main(opts, position);
         // create a notification window
         this.notification = this.electronWindow.createNotificationWindow();
-        this.setContent(opts);
+        this.notification.webContents.on('did-finish-load', () => {
+            this.setContent(content, this.opts);
+        });
         notificationWindowHandler.add(this.notification);
 
-        this.notification.once('close', (e) => notificationWindowHandler.remove(e.sender.id));
-        ipcMain.once('close-notification', this.closeNotification.bind(this));
+        this.notification.once('close', this.notificationClosed.bind(this));
+    }
+
+    private notificationClosed() {
+        notificationWindowHandler.remove(this.notification.id);
+        if (typeof this.opts.closeNotification === 'function') {
+            this.opts.closeNotification({ id: this.notification.id });
+        }
     }
 
     /**
      * Sets notification contents
+     * @param content
      * @param {Partial<NotificationFactoryOpts>} opts
      */
-    private setContent(opts: Partial<NotificationFactoryOpts>) {
-        this.notification.webContents.send('set-content', opts);
-    }
-
-    /**
-     * Closes the notification window
-     * @param {Electron.Event} event
-     */
-    private closeNotification(event: Electron.Event) {
-        if (event.sender.id === this.notification.id) {
-            this.notification.close();
-        }
+    private setContent(
+        content: Partial<NotificationContent>,
+        opts: Partial<NotificationFactoryOpts>
+    ) {
+        this.notification.webContents.send('set-content', content, opts);
     }
 }
+
+ipcMain.on('close-notification', (event: Electron.Event) => {
+    const notification = BrowserWindow.fromWebContents(event.sender);
+    notification.close();
+});

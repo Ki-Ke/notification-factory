@@ -51,6 +51,10 @@ app.on('window-all-closed', () => {
 
 // Preload event listeners
 ipcMain.on('show-notification', () => {
-    new NotificationFactory({ title: 'akon', body: 'test notification message' }, { design: 'simple' });
+    const notification = new NotificationFactory({ title: 'akon', body: 'test notification message' }, { design: 'simple' });
+
+    notification.on('close', (e, arg) => {
+        console.log('notification event ' + arg.id);
+    });
 });
 
