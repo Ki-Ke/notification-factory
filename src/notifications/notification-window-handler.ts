@@ -85,9 +85,10 @@ export class NotificationWindowHandler {
         index: number,
         position: NotificationPosition = this._position
     ) {
-        this.notificationWindows.map(async (notificationWindow) => {
-            const { x, y } = this.calculateNotificationPosition(position);
-            await notificationWindow.setPosition(x, y, true);
+        this.notificationWindows.map((window) => {
+            const bounds = window.getBounds();
+            const { x, y } = this.calculateNextRemoveNotificationPos(bounds);
+            window.setPosition(x, y, true);
         });
     }
 
@@ -102,7 +103,7 @@ export class NotificationWindowHandler {
         const display: Electron.Display = electron.screen.getPrimaryDisplay();
 
         if (this.notificationWindows.length > 0) {
-            return this.calculateNextInsertNotificationPos(position);
+            return this.calculateNextInsertNotificationPos();
         }
 
         this.posX = display.workArea.x;
@@ -132,7 +133,9 @@ export class NotificationWindowHandler {
      * @param {NotificationPosition} position
      * @return {Position}
      */
-    private calculateNextInsertNotificationPos(position: NotificationPosition): Position {
+    private calculateNextInsertNotificationPos(
+        position: NotificationPosition = this._position
+    ): Position {
         let y;
         switch (position.corner) {
             case 'upper-right':
@@ -150,6 +153,27 @@ export class NotificationWindowHandler {
         }
 
         return { x: this.posX, y };
+    }
+
+    private calculateNextRemoveNotificationPos(
+        bounds: Electron.Rectangle,
+        position: NotificationPosition = this._position
+    ): Position {
+        let y;
+        switch (position.corner) {
+            case 'upper-right':
+            case 'upper-left':
+                y = bounds.y - (this.bounds.height + this.padding);
+                break;
+
+            default:
+            case 'lower-right':
+            case 'lower-left':
+                y = bounds.y + (this.bounds.height + this.padding);
+                break;
+        }
+
+        return { x: bounds.x, y };
     }
 
     /**
