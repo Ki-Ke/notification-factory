@@ -30,7 +30,7 @@ export class CustomHtmlNotification {
     private readonly opts: Partial<NotificationFactoryOpts>;
 
     constructor(
-        content: Partial<NotificationContent>,
+        content: NotificationContent,
         opts: Partial<NotificationFactoryOpts>,
         position: Partial<NotificationPosition>
     ) {
@@ -63,7 +63,7 @@ export class CustomHtmlNotification {
      * @param {Partial<NotificationFactoryOpts>} opts
      */
     private setContent(
-        content: Partial<NotificationContent>,
+        content: NotificationContent,
         opts: Partial<NotificationFactoryOpts>
     ) {
         this.notification.webContents.send('set-content', content, opts);

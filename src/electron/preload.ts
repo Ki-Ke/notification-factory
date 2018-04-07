@@ -18,20 +18,20 @@ import { ipcRenderer } from 'electron';
 import { Observable } from 'rxjs/Rx';
 import { NotificationContent, NotificationFactoryOpts } from '../notifications/interfaces';
 
-function initialize() {
+function initialize(opts: NotificationFactoryOpts) {
     const notification = document.getElementById('container');
-    console.log(notification);
     if (notification) {
         const mouseLeave = Observable.fromEvent(notification, 'mouseleave');
         const mouseOver = Observable.fromEvent(notification, 'mouseover');
         const mouseClick = Observable.fromEvent(notification, 'click');
 
-        Observable.merge(
+        const timeObserver = Observable.merge(
             Observable.timer(6000).takeUntil(mouseOver),
             mouseLeave.flatMap(() =>
                 Observable.timer(3000).takeUntil(mouseOver)))
-            .take(1)
-            .subscribe(() => closeNotification());
+            .take(1);
+
+        if (!opts.persistent) timeObserver.subscribe(() => closeNotification());
     }
 }
 
@@ -43,10 +43,10 @@ function initialize() {
  */
 function setNotificationContent(
     event: Electron.Event,
-    content: Partial<NotificationContent>,
+    content: NotificationContent,
     opts: Partial<NotificationFactoryOpts>
 ) {
-    initialize();
+    initialize(opts);
     const title = document.getElementById('title');
     const message = document.getElementById('message');
     const cancel = document.getElementById('cancel');
@@ -61,7 +61,6 @@ function setNotificationContent(
 }
 
 function closeNotification() {
-    console.log('notification close event called');
     ipcRenderer.send('close-notification');
 }
 

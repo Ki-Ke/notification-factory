@@ -23,6 +23,11 @@ export interface NotificationContent {
     icon?: string;
 }
 
+export interface NotificationPosition {
+    corner?: string;
+    display?: string;
+}
+
 export interface CustomNotificationOpts extends NotificationPosition {
     backgroundColor?: string;
     design?: string;
@@ -35,11 +40,6 @@ export interface CustomNotificationOpts extends NotificationPosition {
 
 export interface NotificationFactoryOpts extends CustomNotificationOpts {
     type?: NotificationType;
-}
-
-export interface NotificationPosition {
-    corner?: string;
-    display?: string;
 }
 
 export enum NotificationType {

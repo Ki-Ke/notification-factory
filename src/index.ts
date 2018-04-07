@@ -32,9 +32,7 @@ export class NotificationFactory extends NotificationEvents {
             type: NotificationType.HTML,
             backgroundColor: '#fff',
             flash: false,
-            persistent: false
-        },
-        position: Partial<NotificationPosition> = {
+            persistent: false,
             corner: 'upper-right',
             display: ''
         }
@@ -42,7 +40,8 @@ export class NotificationFactory extends NotificationEvents {
         super();
         this.opts = opts;
         this.opts.closeNotification = this.closeNotification.bind(this);
-        this.customHtmlNotification = new CustomHtmlNotification(content, this.opts, position);
+        this.customHtmlNotification =
+            new CustomHtmlNotification(content, this.opts, this.opts as NotificationPosition);
     }
 
     public closeNotification(arg: { id: number }) {

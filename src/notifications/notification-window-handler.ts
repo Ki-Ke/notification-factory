@@ -31,7 +31,9 @@ export class NotificationWindowHandler {
     private padding: number = 8;
     private notificationWindows: Electron.BrowserWindow[] = [];
     private bounds: Electron.Rectangle;
+
     private _position: NotificationPosition = { corner: 'upper-right', display: ''};
+    private _maxNotificationCount: number = 8;
 
     constructor() {
         this.posX = 0;
@@ -58,9 +60,11 @@ export class NotificationWindowHandler {
     public remove(id: number) {
         const notificationWindow = BrowserWindow.fromId(id);
         const index = this.notificationWindows.indexOf(notificationWindow);
-        if (index !== -1) this.notificationWindows.splice(index, 1);
-        this.updateAllNotificationPosition(index);
-        console.log(`notification Index ${index}`);
+        if (index !== -1) {
+            this.notificationWindows.splice(index, 1);
+            this.updateAllNotificationPosition(index);
+            console.log(`notification Index ${index}`);
+        }
     }
 
     /**
@@ -85,7 +89,9 @@ export class NotificationWindowHandler {
         index: number,
         position: NotificationPosition = this._position
     ) {
-        this.notificationWindows.map((window) => {
+        const activeNotifications = Object.assign([], this.notificationWindows);
+        const notificationToUpdate = activeNotifications.splice(index);
+        notificationToUpdate.map((window: Electron.BrowserWindow) => {
             const bounds = window.getBounds();
             const { x, y } = this.calculateNextRemoveNotificationPos(bounds);
             window.setPosition(x, y, true);
@@ -101,6 +107,9 @@ export class NotificationWindowHandler {
         position: NotificationPosition = this._position
     ): Position {
         const display: Electron.Display = electron.screen.getPrimaryDisplay();
+
+        // sets the maximum number of notification that can be shown position
+        this.maxNotificationCount = Math.floor(display.workAreaSize.height / this.bounds.height);
 
         if (this.notificationWindows.length > 0) {
             return this.calculateNextInsertNotificationPos();
@@ -142,13 +151,19 @@ export class NotificationWindowHandler {
             case 'upper-left':
                 y = this.posY +
                     ((this.bounds.height + this.padding) * this.notificationWindows.length);
+                if (this.notificationWindows.length > this._maxNotificationCount) {
+                    y = Math.floor((y / 2) + (this.bounds.height * this._maxNotificationCount) / 2);
+                }
                 break;
-
             default:
             case 'lower-right':
             case 'lower-left':
                 y = this.posY - ((this.bounds.height + this.padding) *
                     (this.notificationWindows.length + 1));
+
+                if (this.notificationWindows.length > this._maxNotificationCount) {
+                    y = Math.floor((y / 2) - (this.bounds.height * this._maxNotificationCount) / 2);
+                }
                 break;
         }
 
@@ -194,5 +209,13 @@ export class NotificationWindowHandler {
      */
     set position(position: NotificationPosition) {
         this._position = position;
+    }
+
+    /**
+     * Sets maximum number of notification that can be shown position
+     * @param {number} count calculated by (workArea / notification window height)
+     */
+    set maxNotificationCount(count: number) {
+        this._maxNotificationCount = count - 4;
     }
 }

@@ -52,7 +52,10 @@ app.on('window-all-closed', () => {
 
 // Preload event listeners
 ipcMain.on('show-notification', () => {
-    const notification = new NotificationFactory({ title: 'akon', body: 'test notification message' }, { design: 'simple' });
+    const notification = new NotificationFactory(
+        { title: 'akon', body: "akon " + new Date().getTime().toString()},
+        { persistent: true, design: 'simple', corner: 'upper-right' }
+    );
 
     notification.on('close', () => {
         electron.dialog.showErrorBox("notification", "notification closed");
