@@ -16,6 +16,7 @@
 
 'use strict';
 
+const electron = require('electron');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const { NotificationFactory } = require('../lib/index');
 const path = require('path');
@@ -53,8 +54,8 @@ app.on('window-all-closed', () => {
 ipcMain.on('show-notification', () => {
     const notification = new NotificationFactory({ title: 'akon', body: 'test notification message' }, { design: 'simple' });
 
-    notification.on('close', (e, arg) => {
-        console.log('notification event ' + arg.id);
+    notification.on('close', () => {
+        electron.dialog.showErrorBox("notification", "notification closed");
     });
 });
 

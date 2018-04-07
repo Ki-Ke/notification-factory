@@ -20,9 +20,9 @@ import {
     NotificationPosition,
     NotificationContent
 } from './notifications/interfaces';
-import * as EventEmitter from 'events';
+import { NotificationEvents } from './notifications/notification-events';
 
-export class NotificationFactory extends EventEmitter {
+export class NotificationFactory extends NotificationEvents {
     private customHtmlNotification: CustomHtmlNotification;
     private readonly opts: NotificationFactoryOpts;
 
@@ -35,18 +35,17 @@ export class NotificationFactory extends EventEmitter {
             persistent: false
         },
         position: Partial<NotificationPosition> = {
-            corner: 'upper-left',
+            corner: 'upper-right',
             display: ''
         }
     ) {
         super();
         this.opts = opts;
-        this.opts.closeNotification = this.closeNotification;
+        this.opts.closeNotification = this.closeNotification.bind(this);
         this.customHtmlNotification = new CustomHtmlNotification(content, this.opts, position);
     }
 
-    private closeNotification(arg: { id: number }) {
-        console.log('main close called');
+    public closeNotification(arg: { id: number }) {
         this.emit('close', arg);
     }
 }

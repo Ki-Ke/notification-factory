@@ -27,7 +27,7 @@ const notificationWindowHandler = new NotificationWindowHandler();
 export class CustomHtmlNotification {
     private electronWindow: Main;
     private readonly notification: Electron.BrowserWindow;
-    private opts: Partial<NotificationFactoryOpts>;
+    private readonly opts: Partial<NotificationFactoryOpts>;
 
     constructor(
         content: Partial<NotificationContent>,
@@ -41,6 +41,10 @@ export class CustomHtmlNotification {
         this.notification.webContents.on('did-finish-load', () => {
             this.setContent(content, this.opts);
         });
+
+        // Notification window handler stuff
+        notificationWindowHandler.position = position;
+        notificationWindowHandler.updatePosition(this.notification.id);
         notificationWindowHandler.add(this.notification);
 
         this.notification.once('close', this.notificationClosed.bind(this));
