@@ -54,7 +54,7 @@ app.on('window-all-closed', () => {
 ipcMain.on('show-notification', () => {
     const notification = new NotificationFactory(
         { title: 'akon', body: "akon " + new Date().getTime().toString()},
-        { persistent: true, design: 'simple', corner: 'upper-right' }
+        { persistent: false, design: 'simple', corner: 'upper-right' }
     );
 
     notification.on('close', () => {
