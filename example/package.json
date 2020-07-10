@@ -9,6 +9,6 @@
   "author": "Kiran Niranjan <kiran@kike.co.in>",
   "license": "Apache-2.0",
   "devDependencies": {
-    "electron": "^1.8.4"
+    "electron": "^9.1.0"
   }
 }
